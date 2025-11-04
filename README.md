@@ -1,66 +1,131 @@
-## Foundry
+# Foundry FundMe Project
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+A decentralized funding contract project built with Solidity and Foundry, demonstrating basic crowdfunding mechanics with Chainlink price feeds.
 
-Foundry consists of:
+## Project Overview
 
-- **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
-- **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
-- **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
-- **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+This project allows users to fund a contract with ETH, enforcing a minimum USD amount using Chainlink price feeds. The contract owner can withdraw funds, and the project includes comprehensive tests using Foundry's Forge framework.
 
-## Documentation
+### Features
 
-https://book.getfoundry.sh/
+* Fund a contract with ETH based on USD conversion
+* Minimum funding amount enforced
+* Owner-only withdraw functionality
+* Cheaper withdraw method for gas optimization
+* Full test coverage using Foundry and mocks for price feeds
+
+## Project Structure
+
+```
+├── src/                 # Solidity smart contracts
+│   ├── FundMe.sol       # Main funding contract
+│   └── PriceConverter.sol # Library for price conversions
+├── script/              # Deployment and interaction scripts
+│   ├── DeployFundMe.s.sol
+│   ├── Interactions.s.sol
+│   └── HelperConfig.s.sol
+├── test/                # Test contracts using Forge
+│   ├── FundMeTest.t.sol
+│   └── InteractionsTest.t.sol
+├── lib/                 # External dependencies (Chainlink, forge-std, etc.)
+└── foundry.toml         # Foundry configuration
+```
+
+## Prerequisites
+
+* [Foundry](https://book.getfoundry.sh/getting-started/installation)
+* Node.js & npm
+* Git
+* Anvil (for local blockchain testing)
+
+## Installation
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/umidjonn11/Foundry-FundMe.git
+cd Foundry-FundMe
+```
+
+2. Install Foundry dependencies:
+
+```bash
+forge install
+```
+
+3. Install npm packages if needed:
+
+```bash
+npm install
+```
 
 ## Usage
 
-### Build
+### 1. Compile contracts
 
-```shell
-$ forge build
+```bash
+forge build
 ```
 
-### Test
+### 2. Run tests
 
-```shell
-$ forge test
+```bash
+forge test
 ```
 
-### Format
+### 3. Start local blockchain
 
-```shell
-$ forge fmt
+```bash
+anvil
 ```
 
-### Gas Snapshots
+### 4. Deploy scripts
 
-```shell
-$ forge snapshot
+```bash
+forge script script/DeployFundMe.s.sol --rpc-url <RPC_URL> --private-key <PRIVATE_KEY> --broadcast
 ```
 
-### Anvil
+### 5. Run interaction scripts
 
-```shell
-$ anvil
+```bash
+forge script script/Interactions.s.sol --rpc-url <RPC_URL> --private-key <PRIVATE_KEY> --broadcast
 ```
 
-### Deploy
+## Chainlink Price Feed Setup
 
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
+* Use remappings in `foundry.toml` to point to Chainlink contracts:
+
+```toml
+remappings = [
+    "forge-std/=lib/forge-std/src/",
+    "@chainlink/=lib/chainlink-brownie-contracts/contracts/"
+]
 ```
 
-### Cast
+* For testing locally, use `MockV3Aggregator` to simulate ETH/USD price feeds.
 
-```shell
-$ cast <subcommand>
+## Testing
+
+* Use Foundry's `vm` cheats to simulate transactions, pranks, and funding.
+* Mocks are used for price feeds to enable testing without live Chainlink data.
+
+## Notes
+
+* Ensure proper paths for imports to avoid errors like `File import callback not supported (6275)`.
+* Always specify contract names for scripts with multiple contracts:
+
+```bash
+forge script script/Interactions.s.sol --tc InteractionsTest
 ```
 
-### Help
+* Use Anvil addresses as mock accounts for testing user funding and withdrawals.
 
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+## Resources
+
+* [Foundry Book](https://book.getfoundry.sh/)
+* [Chainlink Docs](https://docs.chain.link/docs/get-a-random-number/)
+* [Forge Std Library](https://github.com/foundry-rs/forge-std)
+
+---
+
+This README provides a complete guide to run, test, and interact with the FundMe contract on local and test networks.
